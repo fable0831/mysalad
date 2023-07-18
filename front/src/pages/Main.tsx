@@ -1,10 +1,17 @@
+import styled from '@emotion/styled';
+import Footer from '../components/footer/Footer';
+import Header from '../components/header/Header';
 
-type Props = {}
-
-const Main = (props: Props) => {
+const Main = () => {
   return (
-    <div>Main</div>
-  )
-}
+    <>
+      <Header />
+      <StyledSection />
+      <Footer />
+    </>
+  );
+};
 
-export default Main
+const StyledSection = styled.section``;
+
+export default Main;
