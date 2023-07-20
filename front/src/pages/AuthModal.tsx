@@ -1,20 +1,47 @@
 import styled from '@emotion/styled';
 
 import { FaX } from 'react-icons/fa6';
+import { useDispatch, useSelector } from 'react-redux';
+import { closeAuthModal, openSigninModal, openSignupModal } from '../app/authModalSlice';
+import { RootState } from '../app/store';
 import ficon from '../assets/ficon.png';
 import gicon from '../assets/gicon.png';
 import hicon from '../assets/hicon.png';
 import smilesalad from '../assets/smilesalad.png';
 
+interface Props {
+  sign: string;
+}
+
 const SOCIAL_ICON = [hicon, gicon, ficon];
-const SignInModal = () => {
+
+const AuthModal = (props : Props) => {
+  const authModalStatus= useSelector((state : RootState) => state.reducer.authModal.status);
+  const dispatch = useDispatch();
+
   const loginGoogle = () => {};
 
   const loginFacebook = () => {};
 
   const loginGithub = () => {};
 
-  const onSignUp = () => {};
+  const onSignIn = () => {};
+
+  const handleSigninClick = () => {
+    dispatch(openSigninModal());
+    console.log(authModalStatus);
+  };
+
+  const handleSignupClick = () => {
+    dispatch(openSignupModal());
+    console.log(authModalStatus);
+  }
+
+  const handleCloseModal = () => {
+    dispatch(closeAuthModal());
+    console.log(authModalStatus);
+  }
+
   return (
     <StyledSection>
       <StyledWrapper>
@@ -24,33 +51,41 @@ const SignInModal = () => {
         </LeftBox>
         <RightBox>
           <div className="exit">
-            <span>
-              <FaX />
+            <span >
+              <FaX onClick={handleCloseModal}/>
             </span>
           </div>
           <div className="content">
             <div className="upperWrapper">
-              <h2>로그인</h2>
-              <h4>이메일로 로그인</h4>
+              <h2>{props.sign}</h2>
+              <h4>{`이메일로 ${props.sign}`}</h4>
               <form>
                 <input placeholder="이메일을 입력하세요" />
-                <button>로그인</button>
+                <button>{props.sign}</button>
               </form>
-              <h4>소셜 계정으로 로그인</h4>
+              <h4>{`소셜 계정으로 ${props.sign}`}</h4>
               <div className="social">
                 {SOCIAL_ICON.map(data => {
                   return (
-                    <button>
+                    <button key={data}>
                       <img src={data} alt="소셜 로그인 아이콘" />
                     </button>
                   );
                 })}
               </div>
             </div>
+            {props.sign === "로그인"
+            ?
             <div className="lowerWrapper">
-              <span>지금 가입하시면 고마워요!</span>
-              <div className="signUp">회원가입</div>
-            </div>
+            <span>지금 가입하시면 고마워요!</span>
+            <div className="footBtn" onClick={handleSignupClick}>회원가입</div>
+          </div>
+          :
+          <div className="lowerWrapper">
+          <span>이미 회원이신가요?</span>
+          <div className="footBtn" onClick={handleSigninClick}>로그인</div>
+        </div>
+            }
           </div>
         </RightBox>
       </StyledWrapper>
@@ -67,7 +102,7 @@ const StyledSection = styled.section`
   border-radius: 6px;
   display: flex;
   z-index: 99;
-  background-color: rgb(128, 128, 128, 0.1);
+  background-color: rgb(0, 0, 0, 0.5);
 `;
 const StyledWrapper = styled.div`
   width: 600px;
@@ -177,7 +212,7 @@ const RightBox = styled.div`
       span {
         margin-right: 0.3rem;
       }
-      .signUp {
+      .footBtn {
         display: inline-block;
         font-weight: bold;
         cursor: pointer;
@@ -187,4 +222,4 @@ const RightBox = styled.div`
   }
 `;
 
-export default SignInModal;
+export default AuthModal;

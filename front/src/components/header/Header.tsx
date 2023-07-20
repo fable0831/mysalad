@@ -1,24 +1,39 @@
 import styled from '@emotion/styled';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
+import { useDispatch, useSelector } from 'react-redux';
+import { openSigninModal } from '../../app/authModalSlice';
+import { RootState } from '../../app/store';
 import MySalad from '../../assets/mysalad.png';
-import SignInModal from '../../pages/SignInModal';
+import AuthModal from '../../pages/AuthModal';
 import Button from '../button/Button';
 import NavLinks from '../link/NavLinks';
 
 const Header = () => {
   const [isLogin, setIsLogin] = useState(true);
-  const [modal, setModal] = useState(false);
+  const [userText, setUserText] = useState('로그인');
 
-  function onModal() {
-    if (modal === false) {
-      setModal(true);
+  const authModalStatus = useSelector((state: RootState) => state.reducer.authModal.status);
+  const dispatch = useDispatch();
+
+  const handleSigninClick = () => {
+    dispatch(openSigninModal());
+    console.log(authModalStatus)
+  };
+
+
+  useEffect(() => {
+    if(authModalStatus === 2){
+      setUserText('회원 가입')
+    } else if(authModalStatus === 1){
+      setUserText('로그인');
     }
-  }
+  }, [authModalStatus])
+  
 
   return (
     <StyledHeader>
-      {modal === true ? <SignInModal /> : null}
+      {authModalStatus ===0 ? null : <AuthModal sign={userText} />}
       <StyledWrap>
         <Logo>
           <img src={MySalad} alt="mysalad의 로고" />
@@ -31,7 +46,7 @@ const Header = () => {
           </ul>
         </Nav>
         {isLogin ? (
-          <Side onClick={onModal}>
+          <Side onClick={handleSigninClick}>
             <Button color="#426D53" children="로그인" />
           </Side>
         ) : (
